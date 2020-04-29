@@ -1,7 +1,8 @@
 let Koa=require('koa')
 let KoaRouter=require('koa-router')
 
-
+var Fly=require("flyio/src/node")
+var fly=new Fly
 //1.生成应用
 const app=new Koa()
 
@@ -31,15 +32,25 @@ router.get('/searchBooks',(ctx,next)=>{
             code:1,
             data:'请输入有效的参数'
         }
-    }else{
+    }else{//3.返回相应数据
         ctx.body={
             code:0,
             data:datas
         }
     }
-    //3.返回相应数据
+    
 })
 
+
+router.get('/getOpenId',async(ctx,next)=>{
+    let code=ctx.query.code
+    let appId='wx812b373019ce7752'
+    let appSecret='996e585ef7eb5554ce0eec3e18a56966'
+    let url=`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code`
+
+    let result=await fly.get(url)
+    ctx.body=result
+})
 
 //3.安装路由器，声明使用中间件
 app

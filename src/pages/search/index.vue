@@ -1,22 +1,38 @@
 <template>
     <div id="searchContainer">
         <div class="header">
-            <input v-model="searchContent" placeholder-class="greenPlaceholder" type="text"  placeholder="书中自有黄金屋">
+            <input @confirm="handleConfirm" v-model="searchContent" placeholder-class="greenPlaceholder" type="text"  placeholder="书中自有黄金屋">
             <span @click="handleClaer" class="clear" v-show="searchContent">X</span>
+        </div>
+        <div v-if="booksList.length">
+            <BooksList :booksList="booksList"/>
         </div>
     </div>
 </template>
 
 <script  type="text/ecmascript-6">
+    import request from '../../utils/request'
+    import BooksList from '../booksList/index'
     export default {
+        components:{
+            BooksList
+        },
         data(){
             return {
-                searchContent:''
+                searchContent:'',
+                booksList:[]
             }
         },
         methods:{
             handleClaer(){
                 this.searchContent=''
+            },
+            async handleConfirm(){
+                let data={
+                    req:this.searchContent
+                }
+                let result=await request('/searchBooks',data)
+                this.booksList=result.data
             }
         }
     };

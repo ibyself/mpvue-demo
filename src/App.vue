@@ -1,6 +1,16 @@
 <script  type="text/ecmascript-6">
+    import request from './utils/request'
     export default {
-
+        mounted(){
+            wx.login({
+                success: async(msg)=>{
+                    // console.log(msg)
+                    let code=msg.code
+                    let result=await request('/getOpenId',{code})
+                    console.log(result)
+               }
+            });
+        }
     };
 </script>
 
