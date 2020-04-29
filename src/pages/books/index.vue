@@ -1,26 +1,17 @@
 <template>
     <div id="booksContainer">
         <swiper indicator-dots indicator-color="green" indicator-active-color="skyblue">
-            <swiper-item>
-                <img src="/static/imgs/firstView/2.jpg"/>
+            <swiper-item v-for="(book, index) in newBooksList" :key="index">
+                <img :src="book.image"/>
             </swiper-item>
-            <swiper-item>
-                <img src="/static/imgs/firstView/nvsheng.jpg"/>
-            </swiper-item>
-            <swiper-item>
-                <img src="/static/imgs/firstView/3.jpg"/>
-            </swiper-item>
-            <swiper-item>
-                <img src="/static/imgs/firstView/1.jpg"/>
-            </swiper-item> 
         </swiper>
         <div class="listContainer">
             <div class="nav">
                 <span>全部商品</span>
-                <span class="more"> > </span>
+                <span @click="toBooksList" class="more"> > </span>
             </div>
             <ul class="list">
-                <li class="listItem" v-for="(bookItem,index) in bookList" :key="index">
+                <li class="listItem" v-for="(bookItem,index) in booksList" :key="index">
                     <img :src="bookItem.image" alt=""/>
                     <p>{{bookItem.title}}</p>
                     <p>{{bookItem.author}}</p>
@@ -31,15 +22,27 @@
 </template>
 
 <script  type="text/ecmascript-6">
-    import bookList from './datas/data.json'
+    import booksList from './datas/data.json'
     export default {
         data(){
             return {
-                bookList:[]
+                booksList:[]
             }
         },
         mounted(){
-            this.bookList=bookList
+            this.booksList=booksList
+        },
+        computed:{
+            newBooksList(){
+                return [...this.booksList].splice(0,4)
+            }
+        },
+        methods:{
+            toBooksList(){
+                wx.navigateTo({
+                    url: '/pages/booksList/main?booksList='+JSON.stringify(this.booksList)
+                });
+            }
         }
     };
 </script>
