@@ -1,6 +1,6 @@
 let Koa=require('koa')
 let KoaRouter=require('koa-router')
-
+var jwt = require('jsonwebtoken')
 var Fly=require("flyio/src/node")
 var fly=new Fly
 //1.生成应用
@@ -48,8 +48,20 @@ router.get('/getOpenId',async(ctx,next)=>{
     let appSecret='996e585ef7eb5554ce0eec3e18a56966'
     let url=`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code`
 
+    //获取openId
     let result=await fly.get(url)
-    ctx.body=result
+    // console.log(result.data)
+    let openId=JSON.parse(result.data).openid
+   
+    //加密openId
+    let sessionKey="sun"
+    let token = jwt.sign(openId,sessionKey )
+    console.log("加密后的数据",token)
+    //解密openId
+    var decoded = jwt.verify(token, sessionKey);
+    console.log("解密后的数据",decoded)
+
+    ctx.body=token
 })
 
 //3.安装路由器，声明使用中间件

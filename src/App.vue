@@ -7,7 +7,7 @@
                     // console.log(msg)
                     let code=msg.code
                     let result=await request('/getOpenId',{code})
-                    console.log(result)
+                    wx.setStorageSync("token", result);
                }
             });
         }
